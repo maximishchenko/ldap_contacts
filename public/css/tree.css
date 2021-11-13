@@ -1,0 +1,73 @@
+/* (A) LIST TO MENU */
+.tree, .section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/*.tree {
+  background: #fbfbfb;
+  border: 1px solid #d2d2d2;
+}*/
+.tree li:nth-first-child(1) {
+  /*border-bottom: 1px solid #d2d2d2;*/	
+  padding: 15px 20px;
+}
+.tree li:last-child {
+  border: 0;
+}
+
+/* (B) SUB-SECTIONS */
+/* (B1) TOGGLE SHOW/HIDE */
+.section ul { display: none; }
+.section input:checked ~ ul { display: block; }
+
+/* (B2) HIDE CHECKBOX */
+.section input[type=checkbox] { display: none; }
+
+/* (B3) ADD EXPAND/COLLAPSE ICON  */
+.section { 
+  position: relative; 
+}
+.section label:after {
+  content: "+";
+  position: absolute;
+  top: 0; left: 0;
+    margin-top: 0px;
+  /*padding: 10px;*/
+  text-align: center;
+  font-size: 30px;
+  color: #0f7a65;
+  transition: all 0.5s;
+}
+.section input:checked ~ label:after { 
+  color: #23c37a;  
+  content: "-";	
+    margin-top: -5px;
+  /*transform: rotate(45deg);*/
+}
+a.parent {
+    display: inline-block;
+    padding: 0 10px 0 0;
+}
+
+/* (B4) SUB-SECTION ITEMS */
+.section ul {
+	/*margin-top: 10px;*/
+}
+/*.section ul li { color: #d43d3d; }*/
+
+/* DOES NOT MATTER */
+/*.tree {
+  font-family: arial, sans-serif;
+  font-size: 18px;
+}*/
+
+
+.sidebar__item {
+  padding-left: 40px !important;	
+}
+
+.tree__label {
+	margin-bottom: unset !important;
+	width: 100%;
+}
