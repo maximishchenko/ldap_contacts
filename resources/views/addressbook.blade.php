@@ -129,9 +129,9 @@ tbody:nth-child(odd) {
                                     <span class="block">
                                         <b>{{ trans('messages.companies_phone') }}:</b> {{ $company->phone }}
                                     </span>
-                                    <span class="block">
+                                    {{-- <span class="block">
                                         <b>{{ trans('messages.companies_fax_city') }}:</b> {{ $company->fax_city }}
-                                    </span>
+                                    </span> --}}
                                     <span class="block">
                                         <b>{{ trans('messages.companies_email') }}:</b> {{ $company->email }}
                                     </span>
