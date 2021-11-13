@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('ldap:sync')->cron("*/10 * * * *");
         // $schedule->command('inspire')
         //          ->hourly();
     }

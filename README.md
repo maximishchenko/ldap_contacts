@@ -2,7 +2,7 @@
 
 - Клонировать репозиторий
 ```
-git clone maximishchenko/ldap_contacts
+git clone https://github.com/maximishchenko/ldap_contacts.git
 ```
 
 - Установить зависимости
