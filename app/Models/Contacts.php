@@ -35,13 +35,13 @@ class Contacts extends Model
             }
         });
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
-    
+
     /**
      * Возвращает список организаций
      * @return mixed
@@ -59,12 +59,12 @@ class Contacts extends Model
             $companies->join('contacts', 'contacts.company', '=', 'companies.name');
             $companies->where('contacts.displayName', 'like', '%' . $displayName . '%');
         }
-        
+
         return $companies->get();
     }
-	
-	
-    
+
+
+
     /**
      * Возвращает список организаций, имеющих подчиненные таможенные органы или не входящие в состав других таможенных органов
      * @return mixed
@@ -82,11 +82,11 @@ class Contacts extends Model
             $companies->join('contacts', 'contacts.company', '=', 'companies.name');
             $companies->where('contacts.displayName', 'like', '%' . $displayName . '%');
         }
-        
+
         return $companies->get();
     }
-	
-	
+
+
 	public function getChildCompaniesCount($id)
 	{
 		$child = Companies::where('parent_id', '=', $id)
@@ -94,7 +94,7 @@ class Contacts extends Model
 					->count();
 		return ($child > 0) ? true : false;
 	}
-	
+
 	/**
 	 * Возвращает дочерние организации
 	 */
@@ -110,14 +110,14 @@ class Contacts extends Model
 			//->toarray();
 		return $companies;
 	}
-    
+
 	/**
-	 * Проверяет необходимость разворачивать дерево вложенных организаций на основании url	
+	 * Проверяет необходимость разворачивать дерево вложенных организаций на основании url
 	 */
 	public function isTreeOpened($id, $slug)
 	{
 		$childCompanies = $this->getChildsArray($id);
-		
+
 		$childsArray = [];
 		foreach ($childCompanies as $key => $company) {
 			array_push($childsArray, $company->slug);
@@ -131,7 +131,7 @@ class Contacts extends Model
 		}
 		//return (in_array($slug, $childsArray)) ? true : false;
 	}
-	
+
     /**
      * Возвращает список отделов по названию организации
      * @param string $company название организации
@@ -146,14 +146,14 @@ class Contacts extends Model
             ->where('contacts.status', '=', Share::STATUS_ACTIVE)
             ->where('contacts.company', '=', $company)
             ->distinct();
-        
+
         if (!empty($displayName)) {
             return $departments->where('contacts.displayName', 'like', '%' . $displayName . '%')->get();
         }
-        
+
         return $departments->get();
     }
-    
+
     /**
      * Возвращает список контактов по названию организации и отделу
      * @param string $company
@@ -170,15 +170,15 @@ class Contacts extends Model
             ->where('contacts.department', '=', $department)
             ->where('contacts.company', '=', $company);
             //->whereRaw('telephoneNumber <> ""')
-            //->whereRaw('homePhone <> ""');            
-        
+            //->whereRaw('homePhone <> ""');
+
         if (!empty($displayName)) {
             return $contacts->where('contacts.displayName', 'like', '%' . $displayName . '%')->get();
         }
-        
+
         return $contacts->get();
     }
-    
+
     public function getCountContacts($company, $department, $displayName = null)
     {
         $contacts = Contacts::orderBy('contacts.sort', 'asc')
@@ -188,14 +188,14 @@ class Contacts extends Model
             ->where('contacts.company', '=', $company);
             //->whereRaw('telephoneNumber <> ""')
             //->whereRaw('homePhone <> ""');
-        
+
         if (!empty($displayName)) {
             return $contacts->where('contacts.displayName', 'like', '%' . $displayName . '%')->count();
         }
-        
+
         return $contacts->count();
     }
-    
+
     /**
      * Возвращает массив sid из БД
      * @return array
@@ -204,7 +204,7 @@ class Contacts extends Model
     {
         return static::select('sid')->pluck('sid')->toarray();
     }
-    
+
     /**
      * Возвращает данные контакта, хранящегося в БД по полю objectGuid
      * @param string $objectGuid LDAP objectGuid, для поиска записи в БД
@@ -215,6 +215,36 @@ class Contacts extends Model
         return static::where('sid', $objectGuid)->first();
     }
 
+    /**
+     * Возвращает структуру сотрудников для Google Org Charts
+     *
+     * @return void
+     */
+    public static function getContactsOrgChartData($slug)
+    {
+        $company = Companies::where('slug', '=', $slug)->first();
+		$rootContacts = self::where([['status', '=', Share::STATUS_ACTIVE], ['company', '=', $company->name], ['manager', '=', null]])
+					->orderBy('sort', 'asc')
+					->orderBy('displayName', 'asc')
+					->groupBy('id')
+					->get();
+
+        $childContacts = self::where([['status', '=', Share::STATUS_ACTIVE], ['company', '=', $company->name], ['manager', '<>', null]])
+                    ->get();
+
+
+        $result = [];
+        foreach($rootContacts as $contact) {
+            $rootLevelArray = [['v' => $contact->distinguishedName, 'f' => $contact->displayName], '', ''];
+            array_push($result, $rootLevelArray);
+        }
+        foreach ($childContacts as $contact) {
+            $parent_name = self::where('distinguishedName', $contact->manager)->first();
+            $childLevelArray = [['v' => $contact->distinguishedName, 'f' => $contact->displayName], $parent_name->distinguishedName, ''];
+            array_push($result, $childLevelArray);
+        }
+        return json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
     /*
     |--------------------------------------------------------------------------
     | RELATIONS

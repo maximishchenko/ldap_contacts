@@ -110,6 +110,8 @@ class LoadContactsFromLdap implements ShouldQueue
             'department' => $this->contact['department'],
             'title' => $this->contact['title'],
             'physicalDeliveryOfficeName' => $this->contact['physicalDeliveryOfficeName'],
+            'distinguishedName' => $this->contact['distinguishedName'],
+            'manager' => $this->contact['manager'],
             'whenChanged' => $this->contact['whenChanged'],
             'status' => 1,
         ]);
@@ -141,6 +143,8 @@ class LoadContactsFromLdap implements ShouldQueue
                 'department' => $this->contact['department'],
                 'title' => $this->contact['title'],
                 'physicalDeliveryOfficeName' => $this->contact['physicalDeliveryOfficeName'],
+                'distinguishedName' => $this->contact['distinguishedName'],
+                'manager' => $this->contact['manager'],
                 'whenChanged' => $this->contact['whenChanged'],
             ]);
             return $contact;

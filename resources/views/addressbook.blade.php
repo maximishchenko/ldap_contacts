@@ -1,11 +1,15 @@
 @extends('layouts.default')
 
+
 @php
 use App\Models\Companies;
 use App\Models\Share;
 use Backpack\Settings\app\Models\Setting;
 @endphp
 
+@section('pagetitle')
+{{ trans('messages.frontend_phonebook_main_title') }}
+@endsection
 @section('company')
     @parent
     @php
@@ -13,8 +17,19 @@ use Backpack\Settings\app\Models\Setting;
     @endphp
 @endsection
 
+
 @section('content')
 
+
+<div class="col-md-12 w-100">
+
+    @if (request('slug'))
+        {{ Breadcrumbs::render('slug', request('slug')) }}
+         {{-- {{ Breadcrumbs::render('phonebook', $category) }} --}}
+    @else
+        {{ Breadcrumbs::render('phonebook') }}
+    @endif
+</div>
 
 
 <style>
@@ -27,39 +42,67 @@ tbody:nth-child(odd) {
 </style>
 
 <div class="col-md-3">
+
     <div class="sidebar">
         <div class="sidebar__title">
             <h5>
                 {{ trans('messages.companies') }}
             </h5>
         </div>
-        <ul class="sidebar__list tree">
-            <li class="sidebar__item {{ (request()->path() == '/') ? 'active' : '' }}">
-                <a href="{{ config('app.url') }}/">{{ trans('messages.frontend_companies_all') }}</a>
-            </li>
-            @foreach ($model->getParentCompanies() as $key_company => $company)
-                <li class="sidebar__item {{ ($model->getChildCompaniesCount($company->id)) ? 'section' : '' }} {{ ($company->slug == request('slug')) ? 'active' : '' }}">
-				@if($model->getChildCompaniesCount($company->id))
-					<input type="checkbox" id="<?php echo $key_company; ?>" <?php echo ($model->isTreeOpened($company->id, request('slug'))) ? 'checked' : '' ?> />
-					<label class="tree__label" for="<?php echo $key_company; ?>" style="">
-				@endif
-                    <a href="{{ config('app.url') . '/' . $company->slug }}">{!! $company->name !!}</a>
-				@if($model->getChildCompaniesCount($company->id))
-					</label>
 
-					<ul class="sidebar__child__item">
-					@foreach ($model->getChildsArray($company->id) as $childCompany)
-						<li class="sidebar__item {{ ($childCompany->slug == request('slug')) ? 'active' : '' }}">
-							<a class="child__item" href="{{ config('app.url') . '/' . $childCompany->slug }}">{!! $childCompany->name !!}</a>
-						</li>
-					@endforeach
-					</ul>
+        <div class="collapse d-md-flex pt-2 pl-0 min-vh-100" id="sidebar">
+            <ul class="nav flex-column flex-nowrap overflow-hidden">
 
-				@endif
-
+                {{-- <li class="nav-item"> --}}
+                <li class="nav-item sidebar__item {{ (request()->path() == '/phonebook') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('/phonebook') }}">
+                        <i class="fas fa-building"></i> <span class="d-none d-sm-inline">
+                            {{ trans('messages.frontend_companies_all') }}
+                        </span>
+                    </a>
                 </li>
-            @endforeach
-        </ul>
+
+                @foreach ($model->getParentCompanies() as $key_company => $company)
+
+				    @if($model->getChildCompaniesCount($company->id))
+
+                        <li class="nav-item sidebar__item {{ ($company->slug == request('slug')) ? 'active' : '' }}">
+                            <a class="nav-link collapsed text-truncate" href="{{ url('/phonebook', ['slug' => $company->slug]) }}" data-toggle="collapses" data-target="#submenu{!! $key_company !!}">
+                                <i class="fas fa-building"></i>
+                                <span class="d-none d-sm-inline">
+                                    {!! $company->name !!}
+                                </span>
+                            </a>
+
+                            <div class="collapse show col-md-offset-2" id="submenu{!! $key_company !!}" aria-expanded="false">
+                                <ul class="flex-column pl-2 nav">
+                                    @foreach ($model->getChildsArray($company->id) as $key_child => $childCompany)
+                                        <li class="nav-item sidebar__item  {{ ($childCompany->slug == request('slug')) ? 'active' : '' }}">
+                                            <a class="nav-link child__item col-md-offset-2" href="{{ url('/phonebook', ['slug' => $childCompany->slug]) }}">
+                                                <i class="fas fa-building"></i>
+                                                <span>
+                                                    {!! $childCompany->name !!}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </li>
+                    @else
+                        <li class="nav-item sidebar__item {{ ($company->slug == request('slug')) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ url('/phonebook', ['slug' => $company->slug]) }}">
+                                <i class="fas fa-building"></i> <span class="d-none d-sm-inline">
+                                    {!! $company->name !!}
+                                </span>
+                            </a>
+                        </li>
+				    @endif
+
+                @endforeach
+            </ul>
+        </div>
+
     </div>
 </div>
 <div class="col-md-9">
@@ -141,12 +184,13 @@ tbody:nth-child(odd) {
                         <div class="col-md-3 text-right">
                             <div style="display: inline-block;">
                                 <b>{{ trans('messages.save') }}</b> &nbsp; &nbsp;
-                                <a href="{{ config('app.url') }}/excel/{{ $company->slug }}/" target="_blank">
-                                    <i class="icon icon-doc" style="vertical-align: middle">
+                                <a href="{{ url('/phonebook/excel', ['slug' => $company->slug ]) }}" target="_blank">
+                                    {{-- <i class="icon icon-doc" style="vertical-align: middle">
                                         <span class="icon-doc__type">
 
                                         </span>
-                                    </i>
+                                    </i> --}}
+                                    <i class="fas fa-file-excel fa-3x"></i>
                                 </a>
                             </div>
                         </div>
@@ -204,90 +248,6 @@ tbody:nth-child(odd) {
 </div>
 
 
-@section('subscribe')
-    @parent
-    @if (Setting::get('ENABLE_SUBSCRIPTION') == Share::STATUS_ACTIVE)
-        <!-- subscribe -->
-        <div class="mb-6 footer__form offset-3" id="subscription">
-            <h5 class="footer__links">
-                {{ trans('messages.subscribe_email') }}
-            </h5>
-            <form id="createSubscription" action="{{ route('subscribe') }}" method="POST" autocomplete="off">
-                        @csrf
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="form-group">
-                            <div class="form-group__wrap">
-                                <label>
-                                    {{ trans('messages.companies_email') }}
-                                </label>
-                                <input type="text" id="subscribe" name="email" class="form-control" placeholder="">
-                                <!-- errors -->
-                                <div class="print-msg" style="display:none">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <input class="btn btn-block btn-success btn-lg" type="submit" value="{{ trans('messages.subscribe') }}">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!-- subscribe -->
-
-        <script>
-        // Форма "Подписаться на рассылку"
-        $(function() {
-            $('form#createSubscription').submit(function(e) {
-                e.preventDefault();
-                var $form = $(this);
-                $.ajax({
-                    type: $form.attr('method'),
-                    url: $form.attr('action'),
-                    data: $form.serialize(),
-                    success: function(data) {
-                        if($.isEmptyObject(data.error)){
-                            hideMsg();
-                            printSuccessMsg();
-                            $("#subscribe").val("");
-                        } else {
-                            printErrorMsg(data.error);
-                        }
-                    }
-                }).done(function() {
-                }).fail(function() {
-                    console.log('fail');
-                });
-            });
-        });
-
-        // Отображение ошибок валидации
-        function printErrorMsg (msg) {
-            $(".print-msg").find("p").html('');
-            $(".print-msg").css('display','block');
-            $.each( msg, function( key, value ) {
-                $(".print-msg").find("p").append('<span class="text-danger">'+value+'</span>');
-            });
-        }
-
-        // Отображение ошибок валидации
-        function printSuccessMsg () {
-            $(".print-msg").find("p").html('');
-            $(".print-msg").css('display','block');
-            $(".print-msg").find("p").append('<span class="text-success"><?php echo trans('messages.subscription_successfull') ?></span>');
-        }
-
-        // Скрыть ошибки валидации
-        function hideMsg() {
-            $(".print-msg").css('display','none');
-        }
-        </script>
-    @endif
-@endsection
 
 @if (Setting::get('ENABLE_AUTOCOMPLETE') == Share::STATUS_ACTIVE)
 <script>
@@ -330,20 +290,6 @@ function showHide(element_id) {
 }
 </script>
 
-@if (Setting::get('ENABLE_LOADING_ANIMATION') == Share::STATUS_ACTIVE and request('slug') == null and request('displayName') == null)
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        QueryLoader2(document.querySelector("body"), {
-            barColor: "#011736",
-            backgroundColor: "#e8ebe6",
-            percentage: true,
-            barHeight: 3,
-            minimumTime: 2000,
-            fadeOutTime: 2000
-        });
-    });
-</script>
-@endif
 
 @stop
 

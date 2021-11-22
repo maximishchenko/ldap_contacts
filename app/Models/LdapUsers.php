@@ -87,6 +87,8 @@ class LdapUsers extends Model
             $users[$key]['title'] = $this->getArrayZeroValueOrEmpty($user->title);
             $users[$key]['physicalDeliveryOfficeName'] = $this->getArrayZeroValueOrEmpty($user->physicalDeliveryOfficeName);
             $users[$key]['whenChanged'] = $user->getUpdatedAtTimestamp();
+            $users[$key]['distinguishedName'] = $this->getArrayZeroValueOrEmpty($user->distinguishedName);
+            $users[$key]['manager'] = $this->getArrayZeroValueOrEmpty($user->manager);
         }
         return $users;
     }

@@ -137,6 +137,24 @@ class ContactsCrudController extends CrudController
                 'readonly' => false
             ],
         ]);
+        $this->crud->addField([
+            'name' => 'distinguishedName',
+            'type' => 'text',
+            'label' => trans("messages.contacts_distinguishedName"),
+            'tab' => trans("messages.contacts_base_tab"),
+            'attributes' => [
+                'readonly' => 'readonly'
+            ],
+        ]);
+        $this->crud->addField([
+            'name' => 'manager',
+            'type' => 'text',
+            'label' => trans("messages.contacts_manager"),
+            'tab' => trans("messages.contacts_base_tab"),
+            'attributes' => [
+                'readonly' => 'readonly'
+            ],
+        ]);
 
         // index and show action columns
 
@@ -199,6 +217,16 @@ class ContactsCrudController extends CrudController
         $this->crud->addColumn([
             'name' => 'sort',
             'label' => trans("messages.contacts_sort"),
+            'type' => 'text',
+        ]);
+        $this->crud->addColumn([
+            'name' => 'distinguishedName',
+            'label' => trans("messages.contacts_distinguishedName"),
+            'type' => 'text',
+        ]);
+        $this->crud->addColumn([
+            'name' => 'manager',
+            'label' => trans("messages.contacts_manager"),
             'type' => 'text',
         ]);
 

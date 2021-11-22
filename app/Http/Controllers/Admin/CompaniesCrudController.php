@@ -120,6 +120,11 @@ class CompaniesCrudController extends CrudController
             'type' => 'text',
         ]);
         $this->crud->addColumn([
+            'name' => 'parent_id',
+            'label' => trans("messages.parent_id"),
+            'type' => 'text',
+        ]);
+        $this->crud->addColumn([
             'name' => 'sort',
             'label' => trans("messages.companies_sort"),
             'type' => 'text',

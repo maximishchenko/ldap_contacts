@@ -1,6 +1,14 @@
 <?php
 
 return [
+    'contacts_manager' => 'Руководитель',
+    'contacts_distinguishedName' => 'Выдаваемое имя',
+    'Home' => 'Главная',
+    'frontend_company_main_title' => 'Органиграмма',
+    'frontend_phonebook' => 'Телефонный справочник',
+    'frontend_orgchart' => 'Органиграмма',
+    'parent_id' => 'ID род. записи',
+    'frontend_dashboard_main_title' => 'Структура предприятия',
     'ipPhone' => 'Тел. (внутр.)',
     'homePhone' => 'Тел. (дом.)',
     'mobile' => 'Моб.',
@@ -81,7 +89,7 @@ return [
     'table_homePhone' => 'Тел.<br/> (город.)',
     'companies_teletype_telex' => 'Телетайп/телекс',
     'companies_phone' => 'Телефон',
-    'frontend_main_title' => 'Телефонный справочник',
+    'frontend_phonebook_main_title' => 'Телефонный справочник',
     'queue_status_success' => 'Успешно',
     'table_displayName' => 'Ф.И.О.',
     'search_displayName' => 'Ф.И.О.',

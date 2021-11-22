@@ -12,6 +12,7 @@
         "adldap2/adldap2-laravel": "^6.1",
         "backpack/crud": "4.1.*",
         "backpack/settings": "^3.0",
+        "diglactic/laravel-breadcrumbs": "^7.0",
         "doctrine/dbal": "2.*",
         "fideloper/proxy": "^4.4",
         "laravel/framework": "^6.20",

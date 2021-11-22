@@ -36,6 +36,24 @@
 
 }
 
+.fill__panel {
+    background-color: #17283d;
+    min-height: 40vh;
+    color: #fff;
+}
+.vcenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+    width: 100%;
+    font-size: 3vh;
+}
+.panel__link:hover, .panel__link:visited, .panel__link:focus {
+    text-decoration: none;
+    color: #fff;
+}
+
 .app-header.bg-light .navbar-brand {
     width: 250px;
     justify-content: center !important;
@@ -147,7 +165,7 @@ a, a:hover {
             margin-left: 15px;
         }
         .main .contents {
-            padding: 30px 0 30px 0;
+            padding: 20px 0 20px 0;
         }
 
         .sidebar {
@@ -195,8 +213,8 @@ a, a:hover {
     text-decoration: none;
     color: #011736;
     border: 2px solid transparent;
-    font-family: "PT Sans";
-    font-size: 1rem;
+    /* font-family: "PT Sans";
+    font-size: 1rem; */
     line-height: 1.5rem;
 }
 .sidebar, .sidebar__item a {
@@ -350,6 +368,29 @@ legend {
 
 .main .row {
     margin-right: 0 !important;
+}
+
+
+.breadcrumb {
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    list-style: none;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+.breadcrumb > li + li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0";
+}
+.breadcrumb > li {
+    display: inline-block;
+}
+.breadcrumb > .active {
+    color: #777777;
+}
+.breadcrumb > li {
+    display: inline-block;
 }
 
 /* (A) LIST TO MENU */
@@ -5773,14 +5814,14 @@ html.fancybox-lock {
 .sub-news__link:last-child {
     margin-bottom: 0;
 }
-.breadcrumb__item a:hover,
+/* .breadcrumb__item a:hover,
 .card-item__list li a:hover,
 .sub-news__link a:hover,
 .sub-news__link:hover,
 .toggle-links__item-list ul li a:hover,
 .toggle-table__link-site a:hover {
     text-decoration: none;
-}
+} */
 .sub-news__link a {
     display: -webkit-box;
     display: -webkit-flex;
@@ -6498,7 +6539,7 @@ html.fancybox-lock {
     font-weight: 400;
     line-height: 1.125rem;
 }
-.breadcrumb {
+/* .breadcrumb {
     margin: 0;
     padding: 0;
     background: 0 0;
@@ -6550,7 +6591,7 @@ html.fancybox-lock {
     font-family: "PT Serif", sans-serif;
     font-size: 0.875rem;
     font-style: italic;
-}
+} */
 .burger-inner-menu {
     padding: 24px;
     border: 1px solid #39cc9b;
@@ -11066,9 +11107,6 @@ ul.no-style li a {
     text-decoration: none;
     color: #103b40;
     border: 2px solid transparent;
-    font-family: "PT Sans";
-    font-size: 1rem;
-    line-height: 1.5rem;
 }
 .sidebar__item a:hover {
     border-color: #011736;

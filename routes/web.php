@@ -1,7 +1,10 @@
 <?php
 
 // use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PhonebookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,15 +17,21 @@ use App\Http\Controllers\Controller;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+   return view('dashboard');
+})->name('home');
 
 // Route::redirect('/', '/company', 301);
-//Route::redirect('/', '/company', 301);
-Route::get('/', [Controller::class, 'index']);
+// Route::redirect('/', '/phonebook', 301);
+
 Route::get('/sync', [Controller::class, 'sync']);
-Route::get('/subscribe', [Controller::class, 'subscribe'])->name('subscribe');
-Route::get('/autocomplete', [Controller::class, 'autocomplete'])->name('autocomplete');
-Route::get('/excel/{slug}', [Controller::class, 'companyToExcel']);
-Route::get('/{slug}', [Controller::class, 'index']);
+
+Route::get('/phonebook', [PhonebookController::class, 'index'])->name('phonebook');
+Route::get('/phonebook/subscribe', [Controller::class, 'subscribe'])->name('subscribe');
+Route::get('/phonebook/autocomplete', [PhonebookController::class, 'autocomplete'])->name('autocomplete');
+Route::get('/phonebook/excel/{slug}', [PhonebookController::class, 'companyToExcel']);
+Route::get('/phonebook/{slug}', [PhonebookController::class, 'index']);
+
+
+Route::get('/company', [CompanyController::class, 'index'])->name('company');
+Route::get('/company/{slug}', [CompanyController::class, 'show'])->name('company.show');

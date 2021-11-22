@@ -66,7 +66,7 @@ class Companies extends Model
     {
         return static::select('name')->pluck('name')->toarray();
     }
-	
+
 	/**
 	* Возвращает массив организаций, указанных как родительские
 	*/
@@ -80,7 +80,7 @@ class Companies extends Model
 					->groupBy('id')
 					->get()
 					->toarray();
-					
+
 		$parentsArray = [];
 		$parentsArray[null] = " -- ";
 		foreach ($companies as $key => $company) {
@@ -141,6 +141,54 @@ class Companies extends Model
             return !empty($company->name) ? $company->name : null;
         }
         return null;
+    }
+
+    /**
+     * Возвращает сотрудников организации по переданному slug организации
+     *
+     * @param [type] $slug
+     * @return void
+     */
+    public static function getContactsBySlug($slug)
+    {
+        $company = static::where([['slug', '=', $slug], ['status', '=', Share::STATUS_ACTIVE]])->first();
+        $contacts = Contacts::where([['company', '=', $company->name], ['status', '=', Share::STATUS_ACTIVE]])->get();
+        return $contacts;
+    }
+
+    /**
+     * Возвращает структуру организаций для Google Org Charts
+     *
+     * @return void
+     */
+    public static function getCompaniesOrgChartData()
+    {
+		$rootCompanies = Companies::where('status', Share::STATUS_ACTIVE)
+					->where('parent_id', '=', null)
+					->select('name', 'slug')
+					->orderBy('sort', 'asc')
+					->orderBy('name', 'asc')
+					->groupBy('id')
+					->get();
+
+        $childCompanies = Companies::where('status', Share::STATUS_ACTIVE)
+                    ->where('parent_id', '<>', null)
+                    ->select('name', 'parent_id', 'slug')
+                    ->get();
+
+        $result = [];
+        foreach($rootCompanies as $company) {
+            $url = route('company.show', ['slug' => $company->slug]);
+            $rootLevelArray = [['v' => $company->name, 'f' => '<a href='.$url.'>'.$company->name.'</a>'], '', $url];
+            array_push($result, $rootLevelArray);
+        }
+        foreach ($childCompanies as $company) {
+            $parent_name = Companies::where('id', $company->parent_id)->first();
+            $url = route('company.show', ['slug' => $company->slug]);
+            $childLevelArray = [['v' => $company->name, 'f' => '<a href='.$url.'>'.$company->name.'</a>'], $parent_name->name, $url];
+            array_push($result, $childLevelArray);
+        }
+        return json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     /*
