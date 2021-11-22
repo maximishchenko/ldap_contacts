@@ -129,7 +129,6 @@ class Contacts extends Model
 		} else {
 			return false;
 		}
-		//return (in_array($slug, $childsArray)) ? true : false;
 	}
 
     /**
